@@ -1,14 +1,17 @@
-# Используем базовый образ Python
+# Базовый образ Python
 FROM python:3.10-slim-bullseye
 
-# Устанавливаем необходимые пакеты Python
-
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
-
-# Копируем приложение в рабочую директорию
+# Рабочая директория внутри контейнера
 WORKDIR /app
-COPY app.py .
 
-# Задаем команду для запуска
-CMD ["python", "app.py"]
+# Копируем зависимости
+COPY requirements.txt .
+
+# Устанавливаем зависимости
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем весь проект
+COPY . .
+
+# Запуск как пакет (корректно для импорта внутри app)
+CMD ["python", "-m", "app.main"]
